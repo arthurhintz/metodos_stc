@@ -14,7 +14,7 @@ pmax <- function(y, mu) {
 # Função quantílica
 
 qmax <- function(u, mu) {
-  ext <- uniroot(function(x) MxARMA::pmax(x, mu) - u, interval = c(0, 1), tol = 1e-300, extendInt = "yes")$root
+  ext <- uniroot(function(x) pmax(x, mu) - u, interval = c(0, 1), tol = 1e-300, extendInt = "yes")$root
   return(abs(ext))
 }
 #==========/==========/==========/==========/==========/==========/==========/==========/
@@ -33,45 +33,47 @@ rmax <- function(n, mu) {
 
 # estão diferentes as funções conferir isso
 
-log_vero_max <- function(y, mu){
-
-  ll <- log(32) - 2*log(pi) - 3*log(mu) + log(y^2) 
-        + ((-4*y^2)/(pi*mu^2))
+log_vero_max <- function(x, mu){
+  mu <- mu[1]  
   
-  ll <- -sum(ll)
+  ll <- log(32) + 2*log(x) - (2*log(pi) + 3*log(mu)) +  
+        + ((-4*x^2)/(pi*mu^2))
   
-  return(ll)
+  ll <- sum(ll)
+  
+  return(-ll)
 }
 #ou
 
-loglik_max <- function(y, mu) {
+loglik_max <- function(x, mu) {
   
   mu <- mu[1]  
   
-  log_lik <- sum(log(dmax(y, mu)))
+  log_lik <- sum(log(dmax(x, mu)))
   
   return(-log_lik)
 }
 
 #==========/==========/==========/==========/==========/==========/==========/==========/
-set.seed(1248)
-mu_true <- 2    
-n <- 100      # Tamanho da amostra
-
-x_simulado <- rmax(n = n, mu = mu_true)
-
-# 5. Estimar os Parâmetros via Máxima Verossimilhança
-
-valores_iniciais <- 1
-
-# Usamos a função 'optim' para encontrar os valores que maximizam a log-verossimilhança
-resultado <- optim(par = valores_iniciais, 
-                   fn = loglik_max, y = x_simulado,
-                   method = "SANN")
-
-resultado$par  
-
-loglik_max(y = 2, mu = 2)
-log_vero_max(y = 2, mu = 2)
-
+# set.seed(1248)
+# mu_true <- 2    
+# n <- 1000      # Tamanho da amostra
+# 
+# x_simulado <- rmax(n = n, mu = mu_true)
+# 
+# # 5. Estimar os Parâmetros via Máxima Verossimilhança
+# 
+# valores_iniciais <- 5
+# 
+# # Usamos a função 'optim' para encontrar os valores que maximizam a log-verossimilhança
+# resultado <- optim(par = valores_iniciais, 
+#                    fn = loglik_max, x = x_simulado,
+#                    method = "SANN")
+# 
+# #2
+# resultado <- optim(par = valores_iniciais, 
+#                    fn = log_vero_max, x = x_simulado,
+#                    method = "SANN")
+# 
+# 
 
