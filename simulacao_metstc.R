@@ -5,7 +5,7 @@ rm(list=ls(all=TRUE))
 source("funcoes.R")
 # SET
 set.seed(1234)
-nrep <- 5
+nrep <- 5000
 mu_values <- c(0.2, 0.5, 1, 1.5, 2)  # Valores de mu diferentes
 chute <- 1
 n <- seq(50, 1000, 50)
