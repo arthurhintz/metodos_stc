@@ -24,7 +24,7 @@ rmax <- function(n, mu) {
   u <- runif(n)
   r <- rep(NA, n)
   for (i in 1:n) {
-    r[i] <- MxARMA::qmax(u[i], mu)
+    r[i] <- qmax(u[i], mu)
   }
   return(r)
 }
