@@ -127,33 +127,3 @@ vscore_MPS_Mw <- function(teta,y,m.optim=1,Geo_mean=F)
 } 
 
 #### ---------------------------------------------------------------------- ####
-
-
-
-
-
-
-
-
-# set.seed(1248)
-# mu_true <- 2    
-# n <- 1000      # Tamanho da amostra
-# 
-# x_simulado <- rmax(n = n, mu = mu_true)
-# 
-# # 5. Estimar os Parâmetros via Máxima Verossimilhança
-# 
-# valores_iniciais <- 5
-# 
-# # Usamos a função 'optim' para encontrar os valores que maximizam a log-verossimilhança
-# resultado <- optim(par = valores_iniciais, 
-#                    fn = loglik_max, x = x_simulado,
-#                    method = "SANN")
-# 
-# #2
-# resultado <- optim(par = valores_iniciais, 
-#                    fn = log_vero_max, x = x_simulado,
-#                    method = "SANN")
-# 
-# 
-

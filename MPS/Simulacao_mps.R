@@ -34,7 +34,7 @@ for(k in 1:length(df$mu)){
     n <- df$n[k]
     mu <- df$mu[k]
     method<-"BFGS"
-    arquivo<-"MPS_MK_simu.txt"
+    arquivo<-"MPS_MW_simu.txt"
   }
   theta0<-c(mu)
   rm(mu)
@@ -64,7 +64,7 @@ for(k in 1:length(df$mu)){
       }
     }
   )
-  rm(l_out, output0)
+  # rm(l_out, output0)
   #Salvar as estimativas de Monte Carlo
   output<-estimate[]
   output<-which.NA(output)

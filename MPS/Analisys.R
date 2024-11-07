@@ -3,6 +3,12 @@
 #-------------------------------------------------------------------------------
 SIM.COMP<-function(coef,par,names.pars=NULL,conf=c(0.95),nsign=c(0.05),asymptotic=TRUE,arquivo=NULL)
 {
+  coef=output
+  par=theta0
+  names.pars=names_pars
+  conf=c(0.90,0.95,0.99)
+  nsign=c(0.01,0.05,0.1)
+  arquivo=arquivo
   library(knitr)
   library(xtable)
   #-----------------------------------------------------------------------------
@@ -25,15 +31,15 @@ SIM.COMP<-function(coef,par,names.pars=NULL,conf=c(0.95),nsign=c(0.05),asymptoti
   vk<-moments::kurtosis(coeff)
   #-----------IC e TH-----------------------------------------------------------
   for(i in 1:re){
-    zstat<-as.numeric(abs((coeff[i,]-thetaH0)/sqrt(var.coef[i,])))
+    zstat<-as.numeric(abs((coeff-thetaH0)/sqrt(var.coef)))
     pvalues<-2*(1-pnorm(zstat))
     for(v in 1:length(conf)){
-      LS<-coeff[i,]+q.norm[v]*sqrt(var.coef[i,])
-      LI<-coeff[i,]-q.norm[v]*sqrt(var.coef[i,])
-      contIC[v,]<-contIC[v,]+(LI<=theta0 & theta0<=LS)
+      LS<-coeff+q.norm[v]*sqrt(var.coef)
+      LI<-coeff-q.norm[v]*sqrt(var.coef)
+      contIC[v]<-contIC[v]+(LI<=theta0 & theta0<=LS)
     }
     for(v in 1:length(nsign)){
-      WTest[v,]<-WTest[v,]+(pvalues<nsign[v])
+      WTest[v]<-WTest[v]+(pvalues<nsign[v])
     }
   }
   tc<-contIC/re
