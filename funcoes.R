@@ -57,7 +57,7 @@ loglik_max <- function(x, mu) {
 #==========/==========/==========/==========/==========/==========/==========/==========/
 # Vetor Escore MLE
 
-Score_vector <- function(x, mu){
+Score_vector <- function(x){
   
   mu_hat <- sqrt(8*sum(x**2)/(3*pi*length(x)))
   
