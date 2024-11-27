@@ -9,7 +9,7 @@ source("methods.R")
 
 # SETs
 set.seed(124)
-nrep <- 10
+nrep <- 5000
 mu_values <- c(0.2, 0.5, 1, 1.5)  # Valores de mu diferentes
 n <- c(30, 80, 300, 600)
 n_scen <- length(n)
@@ -29,7 +29,7 @@ estimate_mu <- function(x, method) {
     fn = fn,
     method = "BFGS"
   )
-  return(result$par)  # Retorna o valor estimado de lambda
+  return(abs(result$par)) 
 }
 
 #==========/==========/==========/==========/==========/==========/==========/==========/
