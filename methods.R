@@ -29,7 +29,7 @@ ad_stat <- function(x, mu) {
   A2 <- -n - (1 / n) * sum(
     (2 * (1:n) - 1) * (log(cdf_values) + log(1 - rev(cdf_values)))
   )
-  return(A2)  # Retorna o valor da estatística A^2
+  return(A2)  
 }
 
 

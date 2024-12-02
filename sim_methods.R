@@ -9,7 +9,7 @@ source("methods.R")
 
 # SETs
 set.seed(124)
-nrep <- 5000
+nrep <- 5
 mu_values <- c(0.2, 0.5, 1, 1.5)  # Valores de mu diferentes
 n <- c(30, 80, 300, 600)
 n_scen <- length(n)
@@ -27,9 +27,9 @@ estimate_mu <- function(x, method) {
   result <- optim(
     par = 1,  # Chute inicial
     fn = fn,
-    method = "BFGS"
+    method = "SANN"
   )
-  return(abs(result$par)) 
+  return(abs(result$par))  # Retorna o valor estimado de lambda
 }
 
 #==========/==========/==========/==========/==========/==========/==========/==========/
@@ -44,6 +44,9 @@ simu_methods <- function(nrep, n, mu_true, methods) {
       sample <- rmax(n, mu_true)
   
       for (k in 1:length(methods)) {
+        
+        cat("rep =", i, "e method =", k)
+      
         meth <- methods[k]
         
         mu_estim[i, k] <- estimate_mu(sample, meth)
@@ -54,6 +57,7 @@ simu_methods <- function(nrep, n, mu_true, methods) {
   
   return(mu_estim)
 }
+
 
 
 run_simulation <- function(nrep, n_values, mu_values, methods) {
@@ -68,6 +72,8 @@ run_simulation <- function(nrep, n_values, mu_values, methods) {
   # Loops para tamanhos de amostra, valores de mu e métodos
   for (n in n_values) {
     for (mu in mu_values) {
+      
+      cat("n =", n, "e mu =", mu)
       
       mu_estimations <- simu_methods(nrep, n, mu, methods)
       
@@ -86,7 +92,9 @@ run_simulation <- function(nrep, n_values, mu_values, methods) {
   return(results)
 }
 
-results <- run_simulation(nrep, n, mu_values, method)
+results <- run_simulation(nrep = nrep, n_values = n, mu_values = mu_values, method)
+
+results
 
 write.table(
   results,

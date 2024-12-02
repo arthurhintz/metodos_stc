@@ -24,25 +24,23 @@ rmax <- function(n, mu) {
   u <- runif(n)
   r <- rep(NA, n)
   for (i in 1:n) {
-    r[i] <- MxARMA::qmax(u[i], mu)
+    r[i] <- qmax(u[i], mu)
   }
   return(r)
 }
 #==========/==========/==========/==========/==========/==========/==========/==========/
 # Log Verossimilhança
 
-# estão diferentes as funções conferir isso
-
-log_vero_max <- function(x, mu){
-  mu <- mu[1]  
-  
-  ll <- log(32) + 2*log(x) - (2*log(pi) + 3*log(mu)) +  
-        + ((-4*x^2)/(pi*mu^2))
-  
-  ll <- sum(ll)
-  
-  return(-ll)
-}
+# log_vero_max <- function(x, mu){
+#   mu <- mu[1]  
+#   
+#   ll <- log(32) + 2*log(x) - (2*log(pi) + 3*log(mu)) +  
+#         + ((-4*x^2)/(pi*mu^2))
+#   
+#   ll <- sum(ll)
+#   
+#   return(-ll)
+# }
 #ou
 
 loglik_max <- function(x, mu) {
