@@ -99,12 +99,21 @@ run_simulations <- function(nrep, n_values, mu_true, methods, B) {
   return(results)
 }
 
+set.seed(124)
 # Rodar as simulações
+
+nrep <- 100
+mu_values <- 1  # Valor de mu (pode ser expandido para mais valores)
+n <- c(30, 80, 250, 500)
+n_scen <- length(n)
+method <- c("MM", "MLE", "AD", "MPS")  # Métodos avaliados
+B <- 1000 # Reamostragem de Bootstrap
+
 resultados <- run_simulations(nrep, n, mu_values, method, B)
 resultados
 
 head(resultados[resultados$method == "MLE" & resultados$n == 30, ])  
 
-# write.csv(resultados, "resultados_simulacao.csv", row.names = FALSE)
+write.csv(resultados, "resultados_simulacao.csv", row.names = FALSE)
 
 
