@@ -103,7 +103,7 @@ set.seed(124)
 # Rodar as simulações
 
 nrep <- 500
-mu_values <- 1  # Valor de mu (pode ser expandido para mais valores)
+mu_values <- 0.5 # Valor de mu (pode ser expandido para mais valores)
 n <- c(30, 80, 250, 500)
 n_scen <- length(n)
 method <- c("MM", "MLE", "AD", "MPS")  # Métodos avaliados
@@ -114,6 +114,6 @@ resultados
 
 head(resultados[resultados$method == "MLE" & resultados$n == 30, ])  
 
-write.csv(resultados, "resultados_simulacao2.csv", row.names = FALSE)
+write.csv(resultados, "resultados_simulacao3.csv", row.names = FALSE)
 
 
