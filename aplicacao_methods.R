@@ -5,11 +5,9 @@ url <- "https://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/w
 wine <- read.csv(url, sep = ";")
 head(wine)
 
-x <- wine$pH
+ph <- wine$pH
 
-x <- sample(x, 70)
-
-hist(x)
+hist(ph)
 
 estimate_mu <- function(x, method) {
   fn <- switch(method,
@@ -29,47 +27,47 @@ estimate_mu <- function(x, method) {
 
 
 methods <- c("MM", "MLE", "AD", "MPS")
+samples <- c(30, 80, 250, 500)
 
-results <- list()
+results <- array(NA, dim = c(length(methods), 4, length(samples)),
+                 dimnames = list(methods, c("Estimativa", "Media_Original", "Vies", "EQM"), as.character(samples)))
 
-n <- length(x)
-
-mean_x <- mean(x)
-
-for (m in methods) {
-  resu <- estimate_mu(x, method = m)
+# Loop corrigido
+for (i in seq_along(samples)) {
+  n <- samples[i]
+  x <- sample(ph, n)
+  mean_x <- mean(x)
   
-  mu_hat <- resu$par
-  
-  vcov <- solve(resu$hessian)
-  
-  ep <- sqrt(diag(vcov))
-  
-  
-  bias <- mu_hat - mean_x
-  eqm <- ep^2 + bias
-  
-  results[[m]] <- c(
-    Estimativa = mu_hat,
-    Média_Original = mean_x,
-    Viés = bias,
-    EQM = eqm
-  )
+  for (j in seq_along(methods)) {
+    m <- methods[j]
+    resu <- estimate_mu(x, method = m)
+    mu_hat <- resu$par
+    
+    if (is.matrix(resu$hessian) && det(resu$hessian) != 0) {
+      vcov <- solve(resu$hessian)
+      ep <- sqrt(diag(vcov))
+    } else {
+      ep <- NA
+    }
+    
+    bias <- mu_hat - mean_x
+    eqm <- ep^2 + bias^2
+    
+    results[j, , i] <- c(mu_hat, mean_x, bias, eqm)
+  }
 }
 
-result_df <- do.call(rbind, results)
-result_df <- as.data.frame(result_df)
-
-result_df[] <- lapply(result_df, function(col) as.numeric(as.character(col)))
-
-result_df <- round(result_df, 4)
-print(result_df)
-
+# Mostrar resultados
+print(results)
 #==========/==========
 
 # Cores nomeadas
 cores <- c("blue", "red", "orange", "purple")
 names(cores) <- methods
+
+xmin <- min(ph)
+xmax <- max(ph)
+xlim <- seq(xmin, xmax, 0.01)
 
 # Histograma com densidade empírica
 hist(x, breaks = 10, probability = TRUE, col = "lightgray",
@@ -77,7 +75,7 @@ hist(x, breaks = 10, probability = TRUE, col = "lightgray",
 
 # Adiciona curvas teóricas dmax para cada estimativa de mu
 for (m in methods) {
-  mu_est <- results[[m]][["Estimativa"]]
+  mu_est <- results[,"Estimativa",4]
   
   curve(dmax(x, mu = mu_est), from = min(x), to = max(x),
         col = cores[m], lwd = 2, add = TRUE)
