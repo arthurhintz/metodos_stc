@@ -1,13 +1,23 @@
 source("methods.R")
 source("funcoes.R")
 
-url <- "https://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-white.csv"
-wine <- read.csv(url, sep = ";")
-head(wine)
+#url <- "https://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-white.csv"
+#wine <- read.csv(url, sep = ";")
 
-ph <- wine$pH
 
-hist(ph)
+
+dados <- readxl::read_xlsx("base - Copia.xlsx")
+
+
+k <- ncol(dados)
+
+summary(dados)
+
+dado <- dados$F
+
+dado <- na.omit(dado)
+
+hist(dado)
 
 estimate_mu <- function(x, method) {
   fn <- switch(method,
@@ -27,7 +37,8 @@ estimate_mu <- function(x, method) {
 
 
 methods <- c("MM", "MLE", "AD", "MPS")
-samples <- c(30, 80, 250, 500)
+
+samples <- c(length(dado))
 
 results <- array(NA, dim = c(length(methods), 4, length(samples)),
                  dimnames = list(methods, c("Estimativa", "Media_Original", "Vies", "EQM"), as.character(samples)))
@@ -35,13 +46,13 @@ results <- array(NA, dim = c(length(methods), 4, length(samples)),
 # Loop corrigido
 for (i in seq_along(samples)) {
   n <- samples[i]
-  x <- sample(ph, n)
+  x <- sample(dado, n)
   mean_x <- mean(x)
   
   for (j in seq_along(methods)) {
     m <- methods[j]
     resu <- estimate_mu(x, method = m)
-    mu_hat <- resu$par
+    mu_hat <- abs(resu$par)
     
     if (is.matrix(resu$hessian) && det(resu$hessian) != 0) {
       vcov <- solve(resu$hessian)
@@ -57,25 +68,26 @@ for (i in seq_along(samples)) {
   }
 }
 
-# Mostrar resultados
+
 print(results)
+
 #==========/==========
 
 # Cores nomeadas
 cores <- c("blue", "red", "orange", "purple")
 names(cores) <- methods
 
-xmin <- min(ph)
-xmax <- max(ph)
+xmin <- min(dado)
+xmax <- max(dado)
 xlim <- seq(xmin, xmax, 0.01)
 
 # Histograma com densidade empírica
-hist(x, breaks = 10, probability = TRUE, col = "lightgray",
-     main = "Comparação das curvas estimadas", xlab = "pH")
+hist(x, breaks = 5, probability = T, col = "lightgray",
+     main = "Comparação das curvas estimadas", xlab = "x")
 
 # Adiciona curvas teóricas dmax para cada estimativa de mu
 for (m in methods) {
-  mu_est <- results[,"Estimativa",4]
+  mu_est <- results[m, "Estimativa", 1]
   
   curve(dmax(x, mu = mu_est), from = min(x), to = max(x),
         col = cores[m], lwd = 2, add = TRUE)
@@ -86,10 +98,12 @@ lines(density(x), col = "darkgreen", lwd = 2, lty = 2)
 
 # Legenda
 legend("topright",
-       legend = c(paste("dmax -", methods), "Densidade empírica"),
+       legend = c(paste("dmax -", methods), "Densidade"),
        col = c(cores, "darkgreen"),
        lty = c(rep(1, length(methods)), 2),
-       lwd = 2)
+       lwd = 2,
+       cex = 0.5)  
+
 
 # Usar artigo para me basear
 #usar bootstrap
